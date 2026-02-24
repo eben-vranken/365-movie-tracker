@@ -50,7 +50,6 @@
             transition: border-color 0.2s;
         }
 
-        /* Dark mode toggle */
         .toggle {
             position: absolute;
             top: 20px;
@@ -190,11 +189,18 @@
             margin-top: 3px;
         }
     </style>
+    <script>
+        // Apply saved theme immediately before paint to avoid flash
+        (function () {
+            const saved = localStorage.getItem('theme');
+            if (saved) document.documentElement.setAttribute('data-theme', saved);
+        })();
+    </script>
 </head>
 
 <body>
     <div class="card">
-        <button class="toggle" onclick="toggleTheme()" id="toggle-btn">Dark</button>
+        <button class="toggle" onclick="toggleTheme()" id="toggle-btn"></button>
 
         <p class="label-top">2026 / Goal Tracker</p>
         <h1>365<br /><span>Movies</span></h1>
@@ -227,12 +233,19 @@
     </div>
 
     <script>
-        function toggleTheme() {
-            const html = document.documentElement;
-            const isDark = html.getAttribute('data-theme') === 'dark';
-            html.setAttribute('data-theme', isDark ? 'light' : 'dark');
-            document.getElementById('toggle-btn').textContent = isDark ? 'Dark' : 'Light';
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            document.getElementById('toggle-btn').textContent = theme === 'dark' ? 'Light' : 'Dark';
+            localStorage.setItem('theme', theme);
         }
+
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            applyTheme(current === 'dark' ? 'light' : 'dark');
+        }
+
+        // Set correct button label on load
+        applyTheme(localStorage.getItem('theme') || 'light');
 
         function calculate() {
             const watched = parseInt(document.getElementById('watched').value) || 0;
