@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>365 Movies 2026</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #fff;
+            --fg: #000;
+            --muted: #999;
+            --placeholder: #ccc;
+            --border: #000;
+        }
+
+        [data-theme="dark"] {
+            --bg: #000;
+            --fg: #fff;
+            --muted: #555;
+            --placeholder: #333;
+            --border: #fff;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg);
+            font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
+            color: var(--fg);
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 400px;
+            padding: 48px 40px;
+            border: 1px solid var(--border);
+            position: relative;
+            transition: border-color 0.2s;
+        }
+
+        /* Dark mode toggle */
+        .toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--fg);
+            font-family: inherit;
+            font-size: 0.6rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s, border-color 0.2s;
+        }
+
+        .toggle:hover {
+            background: var(--fg);
+            color: var(--bg);
+        }
+
+        .label-top {
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 32px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 48px;
+        }
+
+        h1 span {
+            font-weight: 300;
+        }
+
+        label {
+            display: block;
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 14px 0;
+            font-size: 2.6rem;
+            font-weight: 700;
+            font-family: inherit;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--border);
+            color: var(--fg);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="number"]::placeholder {
+            color: var(--placeholder);
+        }
+
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            opacity: 1;
+        }
+
+        .divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 40px 0;
+            transition: border-color 0.2s;
+        }
+
+        .result {
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .result-eyebrow {
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 10px;
+        }
+
+        .result-number {
+            font-size: 4rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .result-sub {
+            font-size: 0.8rem;
+            font-weight: 300;
+            margin-top: 6px;
+        }
+
+        .stats {
+            margin-top: 40px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            border-top: 1px solid var(--border);
+            transition: border-color 0.2s;
+        }
+
+        .stat {
+            padding: 16px 0;
+            border-right: 1px solid var(--border);
+            transition: border-color 0.2s;
+        }
+
+        .stat:last-child {
+            border-right: none;
+        }
+
+        .stat:not(:first-child) {
+            padding-left: 16px;
+        }
+
+        .stat-val {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .stat-lbl {
+            font-size: 0.6rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-top: 3px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <button class="toggle" onclick="toggleTheme()" id="toggle-btn">Dark</button>
+
+        <p class="label-top">2026 / Goal Tracker</p>
+        <h1>365<br /><span>Movies</span></h1>
+
+        <label for="watched">Movies watched</label>
+        <input type="number" id="watched" min="0" max="365" placeholder="0" oninput="calculate()" />
+
+        <hr class="divider" />
+
+        <div class="result">
+            <p class="result-eyebrow" id="res-eyebrow">Double-movie days needed</p>
+            <p class="result-number" id="res-num">—</p>
+            <p class="result-sub" id="res-sub"></p>
+        </div>
+
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-val" id="stat-remaining">—</div>
+                <div class="stat-lbl">Left</div>
+            </div>
+            <div class="stat">
+                <div class="stat-val" id="stat-days">—</div>
+                <div class="stat-lbl">Days</div>
+            </div>
+            <div class="stat">
+                <div class="stat-val" id="stat-pace">—</div>
+                <div class="stat-lbl">Avg/Day</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.getAttribute('data-theme') === 'dark';
+            html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            document.getElementById('toggle-btn').textContent = isDark ? 'Dark' : 'Light';
+        }
+
+        function calculate() {
+            const watched = parseInt(document.getElementById('watched').value) || 0;
+            const resNum = document.getElementById('res-num');
+            const resSub = document.getElementById('res-sub');
+            const resEyebrow = document.getElementById('res-eyebrow');
+
+            const now = new Date();
+            const startOfYear = new Date(2026, 0, 1);
+            const dayOfYear = Math.max(1, Math.floor((now - startOfYear) / 86400000) + 1);
+            const daysLeft = 365 - dayOfYear;
+            const moviesLeft = 365 - watched;
+
+            document.getElementById('stat-remaining').textContent = Math.max(0, moviesLeft);
+            document.getElementById('stat-days').textContent = Math.max(0, daysLeft);
+            document.getElementById('stat-pace').textContent = daysLeft > 0 ? (moviesLeft / daysLeft).toFixed(2) : '—';
+
+            resEyebrow.style.display = 'block';
+
+            if (moviesLeft <= 0) {
+                resEyebrow.style.display = 'none';
+                resNum.textContent = '✓';
+                resSub.textContent = 'Goal reached.';
+                return;
+            }
+            if (daysLeft <= 0) {
+                resEyebrow.style.display = 'none';
+                resNum.textContent = '—';
+                resSub.textContent = `Year ended. ${moviesLeft} movies short.`;
+                return;
+            }
+
+            const doubledays = moviesLeft - daysLeft;
+            if (doubledays <= 0) {
+                resNum.textContent = '0';
+                resSub.textContent = 'One movie a day is enough.';
+            } else {
+                resNum.textContent = doubledays;
+                resSub.textContent = `${doubledays} day${doubledays !== 1 ? 's' : ''} watching 2 · ${daysLeft - doubledays} days watching 1`;
+            }
+        }
+
+        calculate();
+    </script>
+</body>
+
+</html>
